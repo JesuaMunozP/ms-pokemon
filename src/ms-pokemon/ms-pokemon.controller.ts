@@ -14,5 +14,4 @@ export class MsPokemonController {
   byPost(@Param('id') id: string) {
     return this.msPokemonService.findOne(id);
   }
-
 }
