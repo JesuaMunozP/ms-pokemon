@@ -9,7 +9,7 @@ describe('MsPokemonService', () => {
 
   const mockRepository = {
     get: jest.fn(),
-    findOne: jest.fn(),
+    findOne: jest.fn().mockReturnValue((id => Promise.resolve({id: '1', name: 'pokemon',  type: ['1', '2']}))) ,
     serviceCallPokemon: jest.fn(),
   };
 
@@ -30,30 +30,36 @@ describe('MsPokemonService', () => {
 
   describe('should return a pokemon', () => {
     it('serviceCallPokemon(), should return a pokemon', async () => {
-      const pokemon = [{
+      const pokemon = {
         id: '1',
         name: 'pokemon',
         type: ['1', '2'],
-      }];
+      };
       jest.spyOn(httpService, 'get').mockReturnValueOnce(
         of({
           status: 200,
           statusText: 'OK',
           config: {},
           headers: {},
-          data: pokemon,
+          data: {id: '1', name:'pokemon', type: ['1', '2']},
         }),
       );
 
       await mockRepository.serviceCallPokemon.mockReturnValue(pokemon);
       mockRepository.findOne.mockReturnValue(pokemon);
       const resultPokemon = await service.findOne('1');
-     // const resultCallPokemon = await service.serviceCallPokemon('url', '1');
+      // await service.serviceCallPokemon('url', '1');
       // expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
       // expect(mockRepository.serviceCallPokemon).toBeCalledTimes(1);
       // expect(await service.findOne('1')).toBeCalledTimes(1);
-      // expect(resultPokemon).toEqual(expected);
+       expect(resultPokemon).toEqual(pokemon);
       // expect(resultCallPokemon).toContain(pokemon);
+      /*expect(await service.findOne('1')).toEqual({
+        id: '1',
+        name: 'pokemon',
+        type: ['1', '2']
+      });*/
+
     });
   });
 });
